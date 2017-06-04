@@ -3,6 +3,7 @@ package com.zh.demo.entity;
 public class user {
 	private String id;
 	private String name;
+	private String mobile;
 	private int sex;
 	private String password;
 	private String desc;
@@ -18,6 +19,13 @@ public class user {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 	public int getSex() {
 		return sex;

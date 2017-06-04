@@ -4,6 +4,7 @@
    <resultMap type="com.zh.demo.entity.user" id="userMap">
        <id column="id" property="id"></id>
        <id column="name" property="name"></id>
+       <id column="mobile" property="mobile"></id>
        <id column="sex" property="sex"></id>
        <id column="pwd" property="password"></id>
        <id column="desc" property="desc"></id>

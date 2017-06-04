@@ -17,10 +17,10 @@ public class userController {
 	private userService userService;
 	
 	
-	@RequestMapping("/getAllUser")
+	@RequestMapping("/login")
 	public String getAllUser(Map<String, Object> map){
 		List<user> list=userService.getAllUser();
 		map.put("hello", list.get(0).getName());
-		return "helloJsp";
+		return "/menu/login";
 	}
 }
