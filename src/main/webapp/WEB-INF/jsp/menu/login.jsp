@@ -39,7 +39,7 @@
 								</div>
 							</div>
 							<div class="form_btn">
-								<button type="button" id="save()">登录</button>
+								<button type="button" id="save" onclick="la()">登录</button>
 							</div>
 							<div class="form_reg_btn">
 								<span>还没有帐号？</span><a href="register.html">马上注册</a>
@@ -62,10 +62,23 @@
 		<script type="text/javascript" src="js/jquery.min.js" ></script>
 		<script type="text/javascript" src="js/common.js" ></script>
 		<script type="text/javascript">
-		    function save(){
-		    	if($(".username").value==null||$(".password").value==null){
+		alert(12);
+		    function la(){
+		    	if($("input[name='username']")[0].value==null||$("input[name='password']")[0].value==null){
 		    		alert("用户名密码不能为空");
 		    	}
+		    	$.ajax({
+		    		url:'/login',
+		    		type:'post',
+		    		async: false,
+		    		data:{
+		    			username:$("input[name='username']")[0].value,
+		    			password:$("input[name='password']")[0].value
+		    		},
+		    		success:function(data){
+		    			alert(data);
+		    		}
+		    	});
 		    	
 		    }
 		</script>
