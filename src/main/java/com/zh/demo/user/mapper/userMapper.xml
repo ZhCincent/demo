@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zh.demo.dao.userDao">
-   <resultMap type="com.zh.demo.entity.user" id="userMap">
+<mapper namespace="com.zh.demo.user.dao.userDao">
+   <resultMap type="com.zh.demo.user.entity.user" id="userMap">
        <id column="id" property="id"></id>
        <id column="name" property="name"></id>
        <id column="mobile" property="mobile"></id>
@@ -11,5 +11,11 @@
    </resultMap>
    <select id="getAllUser" resultMap="userMap">
        select * from user
+   </select>
+   <select id="getByMobile" resultMap="userMap" parameterType="java.lang.String">
+        select * from user where mobile=#{mobile}
+   </select>
+    <select id="addUser"  parameterType="com.zh.demo.user.entity.user">
+        insert into user value(#{user.id},#{user.name},#{user.mobile},#{user.sex},#{user.password},'zzzzzzzzz')
    </select>
 </mapper>

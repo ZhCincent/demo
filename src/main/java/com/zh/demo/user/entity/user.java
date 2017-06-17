@@ -1,4 +1,4 @@
-package com.zh.demo.entity;
+package com.zh.demo.user.entity;
 
 public class user {
 	private String id;
