@@ -62,7 +62,6 @@
 		<script type="text/javascript" src="js/jquery.min.js" ></script>
 		<script type="text/javascript" src="js/common.js" ></script>
 		<script type="text/javascript">
-		alert(12);
 		    function la(){
 		    	if($("input[name='username']")[0].value==null||$("input[name='password']")[0].value==null){
 		    		alert("用户名密码不能为空");
@@ -76,7 +75,14 @@
 		    			password:$("input[name='password']")[0].value
 		    		},
 		    		success:function(data){
-		    			alert(data);
+		    			debugger;
+		    			//alert(JSON.stringify(data));
+		    			var index=data.indexOf(":true");
+		    			if(index==-1){
+		    				alert("用户名密码错误");
+		    			}else{
+		    				window.location.href = "/test";
+		    			}
 		    		}
 		    	});
 		    	
