@@ -1,0 +1,155 @@
+﻿可用ak  9w0bGND7tWoDQlbC2IGT3VGxe73rlEUG
+        oTq3kbSY0uwjt1zm0AepBr7FqYTx4Lcb
+
+
+D5xRa5QyGjb0NzwEBYk9wQaEpXyFOat9
+
+YIogecncCOvlq2oGgWqnYRUCWhKma8dY
+
+https://www.chaidu.com/api/IP/positioning.js?ip=223.104.20.232
+
+
+        var OriginTitile = document.title;
+        var titleTime;
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                document.title = '快回来-- 网站崩溃了!  - openGPS.cn';
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = '￥￥￥-- 自动恢复了~ - openGPS.cn';
+                titleTime = setTimeout(function () {
+                    document.title = OriginTitile;
+                }, 1500);
+            }
+        });
+    
+public static void main(String[] args) {
+        IpEntity ipEntity = test.IpTest("59.109.64.160");
+        if(ipEntity != null){
+                //判断返回状态吗是否为161 定位成功
+                if(ipEntity.getError().equals("161")){
+                        System.out.println("定位成功!");
+                        System.out.println("定位ip为:"+ipEntity.getIp());
+                        System.out.println("定位时间:"+ipEntity.getLoc_time());
+                        System.out.println("具体位置:"+ipEntity.getAddress());
+                        System.out.println("经度为:"+ipEntity.getLat());
+                        System.out.println("维度为:"+ipEntity.getLng());
+                }
+        }
+}
+
+
+
+
+public static IpEntity IpTest(String ip){
+        CloseableHttpClient httpClient  = null;
+        HttpGet httpGet = null;
+        CloseableHttpResponse response = null;
+        IpEntity ipEntity = null;
+        try {
+                httpClient =  HttpClients.createDefault();
+                //String ip = "59.109.64.160";
+                String ak = "9w0bGND7tWoDQlbC2IGT3VGxe73rlEUG";
+                //请求url
+                String url = "https://api.map.baidu.com/highacciploc/v1?qcip="+ip+"&ak="+ak+"&qterm=pc&extensions=1&coord=bd09ll&callback_type=json";
+                httpGet = new HttpGet(url);
+                //System.out.println(httpGet.getURI());
+                //执行get请求
+                response = httpClient.execute(httpGet);
+                //获取请求返回字符串
+                HttpEntity entity = response.getEntity();
+                //请求状态码
+                //System.out.println(response.getStatusLine());
+                if(entity != null){
+                        //长度
+                        //System.out.println("length:"+entity.getContentLength());
+                        String tmp = EntityUtils.toString(entity);
+                        //将json字符串转换为json对象
+                        JSONObject jsonObject = JSONObject.fromObject(tmp);
+                        //定位时间
+                        String loc_time = JSONObject.fromObject(jsonObject.getString("result")).getString("loc_time");
+                        //获取定位代码  161 位定位成功
+                        String error = JSONObject.fromObject(jsonObject.getString("result")).getString("error");
+                        //获取结构化地址
+                        String address = JSONObject.fromObject(jsonObject.getString("content")).getString("formatted_address");
+                        //纬度坐标 
+                        String lat = JSONObject.fromObject(JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lat");
+                        //经度坐标 
+                        String lng = JSONObject.fromObject(JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lng");
+                        ipEntity = new IpEntity();
+                        ipEntity.setError(error);
+                        ipEntity.setIp(ip);
+                        ipEntity.setAddress(address);
+                        ipEntity.setLoc_time(loc_time);
+                        ipEntity.setLat(lat);
+                        ipEntity.setLng(lng);
+                }
+        } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+        }finally{
+                try {
+                        response.close();
+                        httpClient.close();
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+        }
+        return ipEntity;
+}
+
+
+
+public class IpEntity {
+        //需要定位的ip
+        private String ip;
+        public String getIp() {
+                return ip;
+        }
+        public void setIp(String ip) {
+                this.ip = ip;
+        }
+        //纬度坐标 
+        private String lat;
+        //经度坐标 
+        private String lng;
+        //详细地址
+        private String address;
+        public String getLat() {
+                return lat;
+        }
+        public void setLat(String lat) {
+                this.lat = lat;
+        }
+        public String getLng() {
+                return lng;
+        }
+        public void setLng(String lng) {
+                this.lng = lng;
+        }
+        //定位时间
+        private String loc_time;
+        //返回代码
+        private String error;
+        public String getAddress() {
+                return address;
+        }
+        public void setAddress(String address) {
+                this.address = address;
+        }
+        public String getLoc_time() {
+                return loc_time;
+        }
+        public void setLoc_time(String loc_time) {
+                this.loc_time = loc_time;
+        }
+        public String getError() {
+                return error;
+        }
+        public void setError(String error) {
+                this.error = error;
+        }
+}
+
+
