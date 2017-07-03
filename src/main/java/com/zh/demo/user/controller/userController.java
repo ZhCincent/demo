@@ -1,6 +1,8 @@
 package com.zh.demo.user.controller;
 
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -8,13 +10,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.zh.demo.user.entity.ipinfo;
 import com.zh.demo.user.entity.user;
+import com.zh.demo.user.service.ipInfoService;
 import com.zh.demo.user.service.userService;
 import com.zh.demo.utils.Md5Utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,6 +34,8 @@ public class userController {
 	private final static Logger logger=LoggerFactory.getLogger(userController.class);
 	@Autowired
 	private userService userService;
+	@Autowired
+	private ipInfoService ipInfoService;
 	
 	
 	@RequestMapping("/intoLogin")
@@ -56,17 +66,81 @@ public class userController {
 		return JSONObject.toJSONString(map);
 	}
 	
-	@RequestMapping("/addUser")
 	@ResponseBody
-	public void addUser(){
-//		for (int i = 0; i < 1000; i++) {
-//			user user=new user();
-//			user.setId(UUID.randomUUID().toString());
-//			user.setMobile(i+"zzz");
-//			user.setName("zzz");
-//			user.setPassword("123456");
-//			user.setSex(0);
-//			userService.addUser(user);
-//		}
+	@RequestMapping("/getAddress")
+	public String addUser(HttpServletRequest request,String ip){
+		 String ipAddress = request.getHeader("x-forwarded-for");  
+         if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
+             ipAddress = request.getHeader("Proxy-Client-IP");  
+         }  
+         if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
+             ipAddress = request.getHeader("WL-Proxy-Client-IP");  
+         }  
+         if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
+             ipAddress = request.getRemoteAddr();  
+             if(ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")){  
+                 //根据网卡取本机配置的IP  
+                 InetAddress inet=null;  
+                 try {  
+                     inet = InetAddress.getLocalHost();  
+                 } catch (UnknownHostException e) {  
+                     e.printStackTrace();  
+                 }  
+                 ipAddress= inet.getHostAddress();  
+             }  
+         }  
+         //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割  
+         if(ipAddress!=null && ipAddress.length()>15){ //"***.***.***.***".length() = 15  
+             if(ipAddress.indexOf(",")>0){  
+                 ipAddress = ipAddress.substring(0,ipAddress.indexOf(","));  
+             }  
+         } 
+         String loc_time="";
+         String error="";
+         String address="";
+         String lat="";
+         String lng="";
+         String detail="";
+         int status=0;
+         String[] listAk=new String[]{"4dmcZusUBCLzw3Aqj7qs1Xn5RfscUG1f", "oTq3kbSY0uwjt1zm0AepBr7FqYTx4Lcb", "9w0bGND7tWoDQlbC2IGT3VGxe73rlEUG"};
+         for (int i = 0; i < listAk.length; i++) {
+			String responseString=userService.getHighIpLoc(ipAddress, listAk[i]);
+			net.sf.json.JSONObject jsonObject =net.sf.json.JSONObject.fromObject(responseString);
+	        //获取定位代码  161 位定位成功
+	         error = net.sf.json.JSONObject.fromObject(jsonObject.getString("result")).getString("error");
+	         //定位时间
+	         loc_time = net.sf.json.JSONObject.fromObject(jsonObject.getString("result")).getString("loc_time");
+	        if ("161".equals(error)) {
+	        	//获取结构化地址
+		         address = net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("formatted_address");
+		        //纬度坐标 
+		         lat = net.sf.json.JSONObject.fromObject(net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lat");
+		        //经度坐标 
+		         lng = net.sf.json.JSONObject.fromObject(net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lng");
+		         detail=net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location_description");
+		         ipinfo info=new ipinfo();
+	        	 info.setIp(ipAddress);
+	        	 info.setLat(lat);
+	        	 info.setLng(lng);
+	        	 info.setReponseadd(address+detail);
+	        	 info.setReponseid(error);
+	        	 info.setCreattime(loc_time);
+	        	 ipInfoService.addIpInfo(info);
+		         break;
+			}else if("167".equals(error)){
+				status=-1;
+				break;
+			}else{
+				if (i==listAk.length-1) {
+					status=-1;
+				}
+				continue;
+			}
+		}
+         
+         if (status==-1) {
+        	 return "您的ip地址为:"+ipAddress+"定位失败;定位时间为:"+loc_time; 
+		}
+         return "您的ip地址为:["+ipAddress+"]; 定位地址:["+address+detail+"]; 经纬度为: ["+lat+","+lng+"]; 定位时间为:"+loc_time;
 	}
 }

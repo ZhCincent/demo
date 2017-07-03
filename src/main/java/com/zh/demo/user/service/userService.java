@@ -13,5 +13,5 @@ public interface userService {
 	
 	void addUser(user user);
 	
-	Map<String, Object> getHighIpLoc(String ip);
+	String getHighIpLoc(String ip,String ak);
 }

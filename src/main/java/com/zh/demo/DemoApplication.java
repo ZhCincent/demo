@@ -35,7 +35,7 @@ public class DemoApplication implements EmbeddedServletContainerCustomizer {
 	@Override
 	public void customize(ConfigurableEmbeddedServletContainer container) {
 		// 修改端口号  实现  EmbeddedServletContainerCustomizer
-		container.setPort(8080);
+		container.setPort(80);
 		container.addErrorPages(
 				new ErrorPage(HttpStatus.NOT_FOUND,"/404.html"),
 				new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR,"/500.html"));

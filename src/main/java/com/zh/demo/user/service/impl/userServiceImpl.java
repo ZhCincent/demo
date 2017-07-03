@@ -48,17 +48,17 @@ public class userServiceImpl implements userService {
 	}
 	
 	@Override
-	public Map<String, Object> getHighIpLoc(String ip) {
-		System.out.println(bdak);
+	public String getHighIpLoc(String ip,String ak) {
+		System.out.println(ak);
 		BdParms bd=new BdParms();
-		bd.setAk(bdak);
+		bd.setAk(ak);
 		bd.setQcip(ip);
 		bd.setQterm("pc");
 		bd.setExtensions("3");
 		bd.setCoord("bd09ll");
 		bd.setCoding("utf-8");
 		bd.setCallback("json");
-		String url="api.map.baidu.com/highacciploc/v1?ak="+bdak+"&qcip="+ip+"&qterm=pc&extensions=3&coord=bd09ll&callback_type=json";
+		String url="http://api.map.baidu.com/highacciploc/v1?ak="+bdak+"&qcip="+ip+"&qterm=pc&extensions=3&coord=bd09ll&callback_type=json";
 		String responseString = "";
 		try {
             URL urls = new URL(url);
@@ -84,17 +84,6 @@ public class userServiceImpl implements userService {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-		JSONObject jsonObject = JSONObject.fromObject(responseString);
-        //定位时间
-        String loc_time = JSONObject.fromObject(jsonObject.getString("result")).getString("loc_time");
-        //获取定位代码  161 位定位成功
-        String error = JSONObject.fromObject(jsonObject.getString("result")).getString("error");
-        //获取结构化地址
-        String address = JSONObject.fromObject(jsonObject.getString("content")).getString("formatted_address");
-        //纬度坐标 
-        String lat = JSONObject.fromObject(JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lat");
-        //经度坐标 
-        String lng = JSONObject.fromObject(JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lng");
-		return null;
+		return responseString;
 	}
 }

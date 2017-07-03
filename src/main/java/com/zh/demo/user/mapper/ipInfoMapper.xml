@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zh.demo.user.dao.ipInfoDao">
+   <resultMap type="com.zh.demo.user.entity.ipinfo" id="userMap">
+       <id column="id" property="id"></id>
+       <id column="ip" property="ip"></id>
+       <id column="reponseid" property="reponseid"></id>
+       <id column="lat" property="lat"></id>
+       <id column="lng" property="lng"></id>
+       <id column="reponseadd" property="reponseadd"></id>
+       <id column="creattime" property="creattime"></id>
+   </resultMap>
+    <select id="addIpInfo"  parameterType="com.zh.demo.user.entity.ipinfo">
+        insert into ipinfo(ip,reponseid,lat,lng,reponseadd,creattime) value(#{info.ip},#{info.reponseid},#{info.lat},#{info.lng},#{info.reponseadd},#{info.creattime})
+   </select>
+</mapper>
