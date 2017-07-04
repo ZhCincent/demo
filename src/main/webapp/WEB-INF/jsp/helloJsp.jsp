@@ -13,12 +13,12 @@
     .iw_poi_title {color:#CC5522;font-size:14px;font-weight:bold;overflow:hidden;padding-right:13px;white-space:nowrap}
     .iw_poi_content {font:12px arial,sans-serif;overflow:visible;padding-top:4px;white-space:-moz-pre-wrap;word-wrap:break-word}
 </style>
-<script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.2&services=true"></script>
 </head>
-
+<div id="info"><h4>您的IP: [<a style="color: red">${ip}</a>]  定位地址为: [<a style="color: red">${address}</a>] 经纬度:[<a style="color: red">${lat},${lng}</a>] 定位时间:[<a style="color: red">${time}</a>]</h4></div>
 <body style="width: 100%;height: 100%;">
   <!--百度地图容器-->
-  <div style="width:100%;height:798px;border:#ccc solid 0px;" id="dituContent"></div>
+  <div style="width:100%;height:100%;border:#ccc solid 0px;position:absolute;" id="dituContent"></div>
 </body>
 <script type="text/javascript">
     //创建和初始化地图函数：
@@ -33,14 +33,13 @@
     //创建地图函数：
     function createMap(){
     	debugger;
-        var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
-        map.addControl(new BMap.NavigationControl({ offset: new BMap.Size(10, 10) }));
+        var map = new BMap.Map("dituContent",{enableAutoResize:true});//在百度地图容器中创建一个地图
         var point = new BMap.Point(lng,lat);//定义一个中心点坐标
         map.centerAndZoom(point,18);//设定地图的中心点和坐标并将地图显示在地图容器中
         map.enableScrollWheelZoom(true); 
         var marker = new BMap.Marker(point);  // 创建标注
     	map.addOverlay(marker);               // 将标注添加到地图中
-        
+    	
         var pointCenter = map.getCenter();
         //创建圆对象
         circle = new BMap.Circle(pointCenter, 50, {
@@ -52,8 +51,6 @@
         //画到地图上面
         map.addOverlay(circle);
         map.setViewport(circle.getBounds());
-
-        marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
         window.map = map;//将map变量存储在全局
     }
     
@@ -76,6 +73,9 @@
         //向地图中添加比例尺控件
 	var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
 	map.addControl(ctrl_sca);
+	    //地图添加多维视图
+    var ctrl_type=new BMap.MapTypeControl({ mapTypes: [BMAP_NORMAL_MAP,BMAP_HYBRID_MAP,BMAP_SATELLITE_MAP] })
+    map.addControl(ctrl_type);
     }
     
     

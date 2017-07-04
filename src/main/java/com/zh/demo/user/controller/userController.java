@@ -67,9 +67,8 @@ public class userController {
 		return JSONObject.toJSONString(map);
 	}
 	
-	@ResponseBody
 	@RequestMapping("/getAddress")
-	public String addUser(HttpServletRequest request,String ip){
+	public String addUser(HttpServletRequest request,String ip,Map<String, Object> map){
 		 String ipAddress = request.getHeader("x-forwarded-for");  
          if(ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {  
              ipAddress = request.getHeader("Proxy-Client-IP");  
@@ -105,7 +104,7 @@ public class userController {
          int status=0;
          String[] listAk=new String[]{"4dmcZusUBCLzw3Aqj7qs1Xn5RfscUG1f", "oTq3kbSY0uwjt1zm0AepBr7FqYTx4Lcb", "9w0bGND7tWoDQlbC2IGT3VGxe73rlEUG"};
          for (int i = 0; i < listAk.length; i++) {
-			String responseString=userService.getHighIpLoc("113.57.174.18", listAk[i]);
+			String responseString=userService.getHighIpLoc(ipAddress, listAk[i]);
 			net.sf.json.JSONObject jsonObject =net.sf.json.JSONObject.fromObject(responseString);
 	        //获取定位代码  161 位定位成功
 	         error = net.sf.json.JSONObject.fromObject(jsonObject.getString("result")).getString("error");
@@ -143,14 +142,23 @@ public class userController {
 		}
          
          if (status==-1) {
-        	 return "您的ip地址为:"+ipAddress+"定位失败;定位时间为:"+loc_time; 
+        	 map.put("ip", ipAddress);
+        	 map.put("time",loc_time);
+        	 return "/menu/errorAddress"; 
 		}
-         return "您的ip地址为:["+ipAddress+"]; 定位地址:["+address+detail+"]; 经纬度为: ["+lat+","+lng+"]; 定位时间为:"+loc_time;
+         map.put("ip", ipAddress);
+         map.put("lat", lat);
+ 		 map.put("lng", lng);
+ 		 map.put("address", address+detail);
+ 		 map.put("time", loc_time);
+         return "/helloJsp";
 	}
 	@RequestMapping("/intoBdMap")
 	public String intoBdMap(Map<String, Object> map){
-		map.put("lat", "30.551863");
-		map.put("lng", "114.203354");
-		return "/helloJsp";
+		 map.put("ip", "117.136.74.146");
+    	 map.put("time","2017-07-04 21:49:26");
+//		map.put("lat", "30.551863");
+//		map.put("lng", "114.203354");
+		return "/menu/errorAddress";
 	}
 }
