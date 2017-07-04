@@ -26,6 +26,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -104,7 +105,7 @@ public class userController {
          int status=0;
          String[] listAk=new String[]{"4dmcZusUBCLzw3Aqj7qs1Xn5RfscUG1f", "oTq3kbSY0uwjt1zm0AepBr7FqYTx4Lcb", "9w0bGND7tWoDQlbC2IGT3VGxe73rlEUG"};
          for (int i = 0; i < listAk.length; i++) {
-			String responseString=userService.getHighIpLoc(ipAddress, listAk[i]);
+			String responseString=userService.getHighIpLoc("113.57.174.18", listAk[i]);
 			net.sf.json.JSONObject jsonObject =net.sf.json.JSONObject.fromObject(responseString);
 	        //获取定位代码  161 位定位成功
 	         error = net.sf.json.JSONObject.fromObject(jsonObject.getString("result")).getString("error");
@@ -117,7 +118,10 @@ public class userController {
 		         lat = net.sf.json.JSONObject.fromObject(net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lat");
 		        //经度坐标 
 		         lng = net.sf.json.JSONObject.fromObject(net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location")).getString("lng");
-		         detail=net.sf.json.JSONObject.fromObject(jsonObject.getString("content")).getString("location_description");
+		         net.sf.json.JSONObject json=net.sf.json.JSONObject.fromObject(jsonObject.getString("content"));
+		         if (json.containsKey("location_description")) {
+					detail=json.getString("location_description");
+				 }
 		         ipinfo info=new ipinfo();
 	        	 info.setIp(ipAddress);
 	        	 info.setLat(lat);
@@ -142,5 +146,11 @@ public class userController {
         	 return "您的ip地址为:"+ipAddress+"定位失败;定位时间为:"+loc_time; 
 		}
          return "您的ip地址为:["+ipAddress+"]; 定位地址:["+address+detail+"]; 经纬度为: ["+lat+","+lng+"]; 定位时间为:"+loc_time;
+	}
+	@RequestMapping("/intoBdMap")
+	public String intoBdMap(Map<String, Object> map){
+		map.put("lat", "30.551863");
+		map.put("lng", "114.203354");
+		return "/helloJsp";
 	}
 }
