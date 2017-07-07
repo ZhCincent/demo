@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="百度地图,百度地图API，百度地图自定义工具，百度地图所见即所得工具" />
 <meta name="description" content="百度地图API自定义地图，帮助用户在可视化操作下生成百度地图" />
-<title>百度地图API自定义地图</title>
+<title>IP定位</title>
 <!--引用百度地图API-->
 <style type="text/css">
     html,body{margin:0;padding:0;}
@@ -15,8 +15,8 @@
 </style>
 <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.2&services=true"></script>
 </head>
-<div id="info"><h4>您的IP: [<a style="color: red">${ip}</a>]  定位地址为: [<a style="color: red">${address}</a>] 经纬度:[<a style="color: red">${lat},${lng}</a>] 定位时间:[<a style="color: red">${time}</a>]</h4></div>
-<body style="width: 100%;height: 100%;">
+<body>
+<%--   <div id="info" style="height: 2%"><h4>您的IP: [<a style="color: red">${ip}</a>]  定位地址为: [<a style="color: red">${address}</a>] 经纬度:[<a style="color: red">${lat},${lng}</a>] 定位时间:[<a style="color: red">${time}</a>]</h4></div> --%>
   <!--百度地图容器-->
   <div style="width:100%;height:100%;border:#ccc solid 0px;position:absolute;" id="dituContent"></div>
 </body>
@@ -32,25 +32,39 @@
     
     //创建地图函数：
     function createMap(){
-    	debugger;
+    	var radi=${radi};
+    	var msg="您的IP: [${ip}]  定位地址为: [${address}] <br/>经纬度:[${lat},${lng}] 定位时间:[${time}]";
         var map = new BMap.Map("dituContent",{enableAutoResize:true});//在百度地图容器中创建一个地图
         var point = new BMap.Point(lng,lat);//定义一个中心点坐标
         map.centerAndZoom(point,18);//设定地图的中心点和坐标并将地图显示在地图容器中
         map.enableScrollWheelZoom(true); 
         var marker = new BMap.Marker(point);  // 创建标注
     	map.addOverlay(marker);               // 将标注添加到地图中
-    	
+    	marker.setAnimation(BMAP_ANIMATION_BOUNCE);
         var pointCenter = map.getCenter();
         //创建圆对象
-        circle = new BMap.Circle(pointCenter, 50, {
-            strokeColor: "blue",
-            strokeWeight: 1,
+        circle = new BMap.Circle(pointCenter, radi, {
+            strokeColor: "red",
+            strokeWeight: 1.5,
             fillColor: "#E2E8F1",
             fillOpacity: 0.6
         });
         //画到地图上面
         map.addOverlay(circle);
         map.setViewport(circle.getBounds());
+        var opts = {
+        		  position : point,    // 指定文本标注所在的地理位置
+        		  offset   : new BMap.Size(30, -30)    //设置文本偏移量
+        		}
+        var label = new BMap.Label(msg, opts);  // 创建文本标注对象
+		label.setStyle({
+			 color : "red",
+			 fontSize : "12px",
+			 height : "40px",
+			 lineHeight : "20px",
+			 fontFamily:"微软雅黑"
+		 });
+	    map.addOverlay(label);
         window.map = map;//将map变量存储在全局
     }
     
