@@ -2,10 +2,12 @@ package com.zh.demo.user.controller;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.zh.demo.user.entity.ipinfo;
 import com.zh.demo.user.entity.user;
@@ -16,15 +18,21 @@ import com.zh.demo.utils.Md5Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.fabric.xmlrpc.base.Data;
 
 @Controller
 public class userController {
 	private final static Logger logger=LoggerFactory.getLogger(userController.class);
+	@Value("${geeId}")
+	private String geeId;
+	@Value("${geeKey}")
+	private String geeKey;
 	@Autowired
 	private userService userService;
 	@Autowired
@@ -157,5 +165,19 @@ public class userController {
 //		map.put("lat", "30.551863");
 //		map.put("lng", "114.203354");
 		return "/menu/errorAddress";
+	}
+	@RequestMapping("/init.do")
+	@ResponseBody
+	public String getRe(){
+		Map<String, Object> map=new HashMap<String, Object>();
+//		if (new Date().getTime()==num) {
+			map.put("gt", geeId);
+			map.put("challenge", geeKey);
+			map.put("success", true);
+			map.put("version", true);
+//		}else {
+//			map.put("success", false);
+//		}
+		return JSONObject.toJSONString(map);
 	}
 }

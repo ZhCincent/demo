@@ -6,6 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="百度地图,百度地图API，百度地图自定义工具，百度地图所见即所得工具" />
 <meta name="description" content="百度地图API自定义地图，帮助用户在可视化操作下生成百度地图" />
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+<link rel="stylesheet" type="text/css" href="css/buttons.css" />
+<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.2.0/css/font-awesome.min.css" />
+<link rel="stylesheet" type="text/css" href="css/demo.css" />
+<link rel="stylesheet" type="text/css" href="css/component.css" />
 <title>IP定位</title>
 <!--引用百度地图API-->
 <style type="text/css">
@@ -16,10 +21,21 @@
 <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.2&services=true"></script>
 </head>
 <body>
-<%--   <div id="info" style="height: 2%"><h4>您的IP: [<a style="color: red">${ip}</a>]  定位地址为: [<a style="color: red">${address}</a>] 经纬度:[<a style="color: red">${lat},${lng}</a>] 定位时间:[<a style="color: red">${time}</a>]</h4></div> --%>
   <!--百度地图容器-->
-  <div style="width:100%;height:100%;border:#ccc solid 0px;position:absolute;" id="dituContent"></div>
+  <div style="width:76%;height:100%;position:absolute;" id="dituContent"></div>
+  <div style="widows:19%;height:100%;float:right" id="zz">
+      <section class="content">
+		<span class="input input--hoshi">
+			<input class="input__field input__field--hoshi" type="text" id="input-4" />
+			<label class="input__label input__label--hoshi input__label--hoshi-color-1" for="input-4">
+				<span class="input__label-content input__label-content--hoshi">IP地址</span>
+			</label>
+		</span>
+	  </section>
+	  <div style="margin-top: -60px;margin-left: 130px;"><a href="#" class="button button-action button-pill">查询</a></div>
+  </div>
 </body>
+<script src="js/jquery-3.2.1.js"></script>
 <script type="text/javascript">
     //创建和初始化地图函数：
     var lat=${lat};
@@ -60,7 +76,7 @@
 		label.setStyle({
 			 color : "red",
 			 fontSize : "12px",
-			 height : "40px",
+			 height : "50px",
 			 lineHeight : "20px",
 			 fontFamily:"微软雅黑"
 		 });
@@ -95,4 +111,42 @@
     
     initMap();//创建和初始化地图
 </script>
+
+<script src="js/classie.js"></script>
+		<script>
+			(function() {
+				// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+				if (!String.prototype.trim) {
+					(function() {
+						// Make sure we trim BOM and NBSP
+						var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+						String.prototype.trim = function() {
+							return this.replace(rtrim, '');
+						};
+					})();
+				}
+
+				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+					// in case the input is already filled..
+					if( inputEl.value.trim() !== '' ) {
+						classie.add( inputEl.parentNode, 'input--filled' );
+					}
+
+					// events:
+					inputEl.addEventListener( 'focus', onInputFocus );
+					inputEl.addEventListener( 'blur', onInputBlur );
+				} );
+
+				function onInputFocus( ev ) {
+					classie.add( ev.target.parentNode, 'input--filled' );
+				}
+
+				function onInputBlur( ev ) {
+					if( ev.target.value.trim() === '' ) {
+						classie.remove( ev.target.parentNode, 'input--filled' );
+					}
+				}
+			})();
+		</script>
+                
 </html>

@@ -58,7 +58,7 @@ public class userServiceImpl implements userService {
 		bd.setCoord("bd09ll");
 		bd.setCoding("utf-8");
 		bd.setCallback("json");
-		String url="http://api.map.baidu.com/highacciploc/v1?ak="+bdak+"&qcip="+ip+"&qterm=pc&extensions=3&coord=bd09ll&callback_type=json";
+		String url="http://api.map.baidu.com/highacciploc/v1?ak="+ak+"&qcip="+ip+"&qterm=pc&extensions=3&coord=bd09ll&callback_type=json";
 		String responseString = "";
 		try {
             URL urls = new URL(url);
