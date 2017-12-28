@@ -19,9 +19,9 @@ import org.springframework.boot.Banner;
 @ServletComponentScan
 public class DemoApplication implements EmbeddedServletContainerCustomizer {
 
-	@RequestMapping("/test")
+	@RequestMapping("/")
 	public String test(){
-		return "hello spring-boot";
+		return "Z==伟哥最牛皮==,==伟哥最傻逼==.W";
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
